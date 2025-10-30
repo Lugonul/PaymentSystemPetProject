@@ -1,0 +1,20 @@
+server:
+  port: 8001
+
+eureka:
+  server:
+    eviction-interval-timer-in-ms: 1000  # Интервал удаления неактивных инстансов (мс)
+    registry-sync-retries: 5               # Количество попыток синхронизации между нодами Eureka
+#    enable-self-preservation: true         # Защита от случайного удаления инстансов
+    renewal-percent-threshold: 0.85        # Порог для режима самосохранения
+  instance:
+    hostname: eureka-server
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+spring:
+  application:
+    name: eureka-server

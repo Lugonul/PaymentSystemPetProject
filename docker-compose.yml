@@ -1,0 +1,258 @@
+version: '3.8'
+
+services:
+
+
+  jaeger:
+    image: jaegertracing/jaeger:2.5.0
+    ports:
+      - "4318:4318"
+      - "16686:16686"
+
+
+
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:26.2.5
+    restart: always
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KEYCLOAK_EXTRA_ARGS="-Dkeycloak.profile.feature.upload_scripts=enabled"
+    ports:
+      - "127.0.0.1:8180:8080"
+    command: [ "start-dev" ]
+    networks:
+      - backend-network
+
+
+
+
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  postgres:
+    image: postgres:17
+    container_name: postgres_db_payment_system
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_MULTIPLE_DATABASES: mydb,keycloak_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: postgres -c listen_addresses='*' -c shared_preload_libraries=pg_stat_statements
+    networks:
+      - backend-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d mydb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  redis:
+    image: redis:latest
+    container_name: redis_cache_payment_system
+    ports:
+      - "6379:6379"
+    networks:
+      - backend-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_payment_system
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    networks:
+      - backend-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  eureka-server:
+    build: ./EurekaServer
+    container_name: eureka-server
+    ports: [ "8001:8001" ]
+    networks: [ backend-network ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/actuator/health" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  config-server:
+    build: ./ConfigServer
+    container_name: config-server
+    ports: [ "8888:8888" ]
+    networks: [ backend-network ]
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/Lugonul/config.git
+      #      - SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME=${GITHUB_USERNAME}
+      #      - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=${GITHUB_TOKEN}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL=main
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  processing-center:
+    build: ./ProcessingCenterService
+    container_name: processing-center
+    ports: [ "8081:8081" ]
+    volumes:
+      - ./processing-center-logs:/logs
+      - ./ProcessingCenterService/config-client.yml:/app/config-client.yml
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
+    networks: [ backend-network ]
+    depends_on:
+      - config-server
+      - eureka-server
+      - postgres
+      - redis
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+
+  sales-point:
+    build: ./SalesPointService
+    container_name: sales-point
+    ports: [ "8082:8082" ]
+    volumes:
+      - ./SalesPointService/config-client.yml:/app/config-client.yml
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
+    networks: [ backend-network ]
+    depends_on:
+      - config-server
+      - eureka-server
+      - postgres
+      - redis
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+
+  issuing-bank:
+    build: ./IssuingBankService
+    container_name: issuing-bank
+    ports: [ "8083:8083" ]
+    volumes:
+      - ./issuing-bank-logs:/logs
+      - ./IssuingBankService/config-client.yml:/app/config-client.yml
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
+    networks: [ backend-network ]
+    depends_on:
+      - config-server
+      - eureka-server
+      - postgres
+      - redis
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512m
+        reservations:
+          memory: 256m
+
+volumes:
+  postgres_data:
+  keycloak_data:
+    name: payment_system_project_meshakin_ma_feb_1_keycloak_data
+
+networks:
+  backend-network:
+    driver: bridge

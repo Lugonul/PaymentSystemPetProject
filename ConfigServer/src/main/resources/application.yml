@@ -1,0 +1,26 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${SPRING_CLOUD_CONFIG_SERVER_GIT_URI}
+          username: ${SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME}
+          password: ${SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD}
+          default-label: ${SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL:main}
+          clone-on-start: true
+          force-pull: true
+          skip-ssl-validation: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8001/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.config.server: DEBUG

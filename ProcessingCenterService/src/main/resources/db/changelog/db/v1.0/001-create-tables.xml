@@ -1,0 +1,196 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="ADmin (generated)" id="1753211672854-1">
+        <createTable tableName="user_access">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_access_pkey"/>
+            </column>
+            <column defaultValueBoolean="true" name="account_non_expired" type="BOOLEAN"/>
+            <column defaultValueBoolean="true" name="account_non_locked" type="BOOLEAN"/>
+            <column defaultValueBoolean="true" name="credentials_non_expired" type="BOOLEAN"/>
+            <column defaultValueBoolean="true" name="enabled" type="BOOLEAN"/>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="user_login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-2">
+        <addUniqueConstraint columnNames="user_login" constraintName="uk955h84jfjbjj5twjo6ykkwr5w" tableName="user_access"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-3">
+        <createTable tableName="acquiring_bank">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="acquiring_bank_pkey"/>
+            </column>
+            <column name="abbreviated_name" type="VARCHAR(255)"/>
+            <column name="bic" type="VARCHAR(9)"/>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-4">
+        <createTable tableName="card">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="card_pkey"/>
+            </column>
+            <column name="card_number" type="VARCHAR(50)"/>
+            <column name="expiration_date" type="date"/>
+            <column name="holder_name" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+            <column name="payment_system_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+<!--    <changeSet author="ADmin (generated)" id="1753211672854-5">-->
+<!--        <createTable tableName="databasechangelog">-->
+<!--            <column name="id" type="VARCHAR(255)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="author" type="VARCHAR(255)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="filename" type="VARCHAR(255)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="dateexecuted" type="TIMESTAMP WITHOUT TIME ZONE">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="orderexecuted" type="INTEGER">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="exectype" type="VARCHAR(10)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="md5sum" type="VARCHAR(35)"/>-->
+<!--            <column name="description" type="VARCHAR(255)"/>-->
+<!--            <column name="comments" type="VARCHAR(255)"/>-->
+<!--            <column name="tag" type="VARCHAR(255)"/>-->
+<!--            <column name="liquibase" type="VARCHAR(20)"/>-->
+<!--            <column name="contexts" type="VARCHAR(255)"/>-->
+<!--            <column name="labels" type="VARCHAR(255)"/>-->
+<!--            <column name="deployment_id" type="VARCHAR(10)"/>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="ADmin (generated)" id="1753211672854-6">-->
+<!--        <createTable tableName="databasechangeloglock">-->
+<!--            <column name="id" type="INTEGER">-->
+<!--                <constraints nullable="false" primaryKey="true" primaryKeyName="databasechangeloglock_pkey"/>-->
+<!--            </column>-->
+<!--            <column name="locked" type="BOOLEAN">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="lockgranted" type="TIMESTAMP WITHOUT TIME ZONE"/>-->
+<!--            <column name="lockedby" type="VARCHAR(255)"/>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
+    <changeSet author="ADmin (generated)" id="1753211672854-7">
+        <createTable tableName="merchant_category_code">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="merchant_category_code_pkey"/>
+            </column>
+            <column name="mcc" type="VARCHAR(4)"/>
+            <column name="mcc_name" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-8">
+        <createTable tableName="payment_system">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="payment_system_pkey"/>
+            </column>
+            <column name="payment_system_name" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-9">
+        <createTable tableName="response_code">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="response_code_pkey"/>
+            </column>
+            <column name="error_code" type="VARCHAR(1)"/>
+            <column name="error_description" type="VARCHAR(255)"/>
+            <column name="error_level" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-10">
+        <createTable tableName="sales_point">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sales_point_pkey"/>
+            </column>
+            <column name="pos_address" type="VARCHAR(255)"/>
+            <column name="pos_inn" type="VARCHAR(12)"/>
+            <column name="pos_name" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+            <column name="acquiring_bank_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-11">
+        <createTable tableName="terminal">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="terminal_pkey"/>
+            </column>
+            <column name="terminal_id" type="VARCHAR(9)"/>
+            <column name="version" type="BIGINT"/>
+            <column name="mcc_id" type="BIGINT"/>
+            <column name="pos_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-12">
+        <createTable tableName="transaction">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transaction_pkey"/>
+            </column>
+            <column name="authorization_code" type="VARCHAR(255)"/>
+            <column name="sum" type="numeric(38, 2)"/>
+            <column name="transaction_date" type="date"/>
+            <column name="version" type="BIGINT"/>
+            <column name="card_id" type="BIGINT"/>
+            <column name="response_code_id" type="BIGINT"/>
+            <column name="terminal_id" type="BIGINT"/>
+            <column name="transaction_type_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-13">
+        <createTable tableName="transaction_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="transaction_type_pkey"/>
+            </column>
+            <column name="operator" type="VARCHAR(1)"/>
+            <column name="transaction_type_name" type="VARCHAR(255)"/>
+            <column name="version" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-14">
+        <addForeignKeyConstraint baseColumnNames="response_code_id" baseTableName="transaction" constraintName="fk43f8qs6kjb3na246ivj8ne536" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="response_code" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-15">
+        <addForeignKeyConstraint baseColumnNames="card_id" baseTableName="transaction" constraintName="fk484i2t8acnct6xy8ylevl40go" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-16">
+        <addForeignKeyConstraint baseColumnNames="pos_id" baseTableName="terminal" constraintName="fkbp7sr0lfc8vdiga1erq05oeif" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sales_point" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-17">
+        <addForeignKeyConstraint baseColumnNames="terminal_id" baseTableName="transaction" constraintName="fkhsb9kiwnb5cluw6dijgxm51mm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="terminal" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-18">
+        <addForeignKeyConstraint baseColumnNames="mcc_id" baseTableName="terminal" constraintName="fki6n53jl2yx67r7re8h307naal" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="merchant_category_code" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-19">
+        <addForeignKeyConstraint baseColumnNames="acquiring_bank_id" baseTableName="sales_point" constraintName="fkisnjq5uwd4km1mkxi891eowsm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="acquiring_bank" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-20">
+        <addForeignKeyConstraint baseColumnNames="transaction_type_id" baseTableName="transaction" constraintName="fknl0vpl01y6vu03hkpi4xupugo" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="transaction_type" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+    <changeSet author="ADmin (generated)" id="1753211672854-21">
+        <addForeignKeyConstraint baseColumnNames="payment_system_id" baseTableName="card" constraintName="fkswiybuy013ld9llrq0ooa7xse" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="payment_system" referencedTableSchemaName="processing_center_service" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: processing-center-service
+
+#app:
+#  schema-name: &schema-name processing_center_service
+#  cache:
+#    ttl-seconds: 600
+#
+#server:
+#  port: 8082
+#
+#spring:
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/mydb?currentSchema=processing_center_service
+#    username: admin
+#    password: admin
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: validate
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+#    properties:
+#      hibernate:
+#        default_schema: *schema-name # Используем якорь
+#
+#  liquibase:
+#    change-log: classpath:/db/changelog/db/changelog-master.xml
+#    default-schema: *schema-name
+#    liquibase-schema: *schema-name
+#    parameters:
+#      schemaName: *schema-name # Один параметр для всех миграций
+#    contexts: dev # Контекст выполнения
+#
+#
+#  cache:
+#    type: redis
+#    redis:
+#      time-to-live: ${app.cache.ttl-seconds}s
+#
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+#    configUrl: /v3/api-docs/swagger-config
+#    url: /v3/api-docs
+#    operationsSorter: alpha
+#    tagsSorter: alpha

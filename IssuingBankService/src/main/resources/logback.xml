@@ -1,0 +1,47 @@
+<configuration>
+    <!-- Указываем, что нужно следить за изменениями конфига -->
+    <scan>true</scan>
+    <scanPeriod>30 seconds</scanPeriod>
+
+    <!-- Определяем свойства -->
+    <property name="LOG_DIR" value="logs"/>
+    <property name="APP_NAME" value="processing-center"/>
+    <property name="LOG_FILE" value="${LOG_DIR}/${APP_NAME}.log"/>
+
+    <!-- Консольный вывод -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Файловый вывод -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <immediateFlush>true</immediateFlush>
+    </appender>
+
+    <!-- Настройки логгеров -->
+    <logger name="com.meshakin" level="TRACE" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Корневой логгер -->
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Дополнительные настройки -->
+    <logger name="org.springframework.cloud" level="DEBUG"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="feign" level="DEBUG"/>
+    <logger name="com.netflix" level="DEBUG"/>
+    <logger name="org.springframework.retry" level="TRACE"/>
+    <logger name="org.springframework.boot.autoconfigure" level="DEBUG"/>
+
+</configuration>
