@@ -1,5 +1,13 @@
-
 <configuration>
+    <!-- Указываем, что нужно следить за изменениями конфига -->
+    <scan>true</scan>
+    <scanPeriod>30 seconds</scanPeriod>
+
+    <!-- Определяем свойства -->
+    <property name="LOG_DIR" value="logs"/>
+    <property name="APP_NAME" value="sales-point"/>
+    <property name="LOG_FILE" value="${LOG_DIR}/${APP_NAME}.log"/>
+
     <!-- Консольный вывод -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -7,20 +15,39 @@
         </encoder>
     </appender>
 
-    <!-- КОРНЕВОЙ ЛОГГЕР -->
+    <!-- Файловый вывод -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Настройки логгеров -->
+    <logger name="com.meshakin" level="TRACE" additivity="false">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Корневой логгер -->
     <root level="INFO">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 
-    <!-- Кастомные настройки -->
+    <!-- Дополнительные настройки -->
     <logger name="org.springframework.cloud" level="DEBUG"/>
     <logger name="org.springframework.web" level="DEBUG"/>
     <logger name="feign" level="DEBUG"/>
     <logger name="com.netflix" level="DEBUG"/>
     <logger name="org.springframework.retry" level="TRACE"/>
     <logger name="org.springframework.boot.autoconfigure" level="DEBUG"/>
-    <logger name="org.springframework.security" level="TRACE"/>
-    <logger name="org.springframework.web.filter" level="DEBUG"/>
-    <logger name="org.springframework.security.web.FilterChainProxy" level="DEBUG"/>
-    <logger name="com.meshakin" level="TRACE"/>
+    <logger name="io.opentelemetry" level="DEBUG"/>
 </configuration>

@@ -166,7 +166,7 @@ services:
     container_name: processing-center
     ports: [ "8081:8081" ]
     volumes:
-      - ./processing-center-logs:/logs
+      - ./ProcessingCenterService/logs:/app/logs
       - ./ProcessingCenterService/config-client.yml:/app/config-client.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
@@ -197,6 +197,7 @@ services:
     container_name: sales-point
     ports: [ "8082:8082" ]
     volumes:
+      - ./SalesPointService/logs:/app/logs
       - ./SalesPointService/config-client.yml:/app/config-client.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
@@ -226,7 +227,7 @@ services:
     container_name: issuing-bank
     ports: [ "8083:8083" ]
     volumes:
-      - ./issuing-bank-logs:/logs
+      - ./IssuingBankService/logs:/app/logs
       - ./IssuingBankService/config-client.yml:/app/config-client.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: file:/app/config-client.yml
